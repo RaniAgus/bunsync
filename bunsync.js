@@ -1,7 +1,7 @@
 import { watch, copyFile, lstatSync } from 'fs';
 import { parseArgs } from 'util';
 
-let { values: { src, dest, java } } = parseArgs({
+let { values: { src, dest, java, help } } = parseArgs({
   args: Bun.argv,
   options: {
     src: {
@@ -13,6 +13,10 @@ let { values: { src, dest, java } } = parseArgs({
     java: {
       type: 'string',
     },
+    help: {
+      type: 'boolean',
+      default: false,
+    },
   },
   allowPositionals: true,
 });
@@ -22,8 +26,26 @@ if (java) {
   dest = `${java}/target/classes`;
 }
 
+const usage = `
+Usage: bunsync [--src <src> --dest <dest>] [--java <module>]
+
+  --src  <folder> The source directory to watch
+
+  --dest <folder> The destination directory to copy to
+
+  --java <module> Use the default Java module layout.
+                  Equivalent to --src <module>/src/main/resources --dest <module>/target/classes
+
+  --help          Show this help message
+`;
+
+if (help) {
+  console.log(usage);
+  process.exit(0);
+}
+
 if (!src || !dest) {
-  console.error('Usage: bunsync [--src <src> --dest <dest>] [--java <module>]');
+  console.error(usage);
   process.exit(1);
 }
 
