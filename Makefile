@@ -5,7 +5,7 @@ else
 endif
 
 run:
-	bun run bunsync.js
+	bun run bunsync.js $(ARGS)
 
 install:
 	$(SUDO) bun build ./bunsync.js --compile --outfile $(OUTFILE)
